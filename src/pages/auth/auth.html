@@ -1,0 +1,131 @@
+<ion-content>
+
+  <ion-grid>
+    <ion-row
+      justify-content-center
+      align-items-center
+      style="height: 90vh"
+    >
+      <ion-col
+        col-sm-8
+        col-md-4
+        col-lg-3
+        col-xl-3
+      >
+
+        <form
+          [formGroup]="authForm"
+          (submit)="onSubmit()"
+        >
+
+          <ng-container *ngIf="!configs.isSignIn">
+            <ion-item>
+              <ion-icon
+                name="person"
+                color="primary"
+                item-start
+              ></ion-icon>
+              <ion-input
+                type="text"
+                placeholder="Name"
+                formControlName="name"
+              ></ion-input>
+              <ion-note
+                item-end
+                color="danger"
+                *ngIf="name.dirty && name.hasError('required')"
+              >
+                Obrigatório
+              </ion-note>
+              <ion-note
+                item-end
+                color="danger"
+                *ngIf="name.dirty && name.hasError('minlength')"
+              >
+                Min 3 caracteres
+              </ion-note>
+            </ion-item>
+          </ng-container>
+
+          <ion-item>
+            <ion-icon
+              name="mail"
+              color="primary"
+              item-start
+            ></ion-icon>
+            <ion-input
+              type="email"
+              placeholder="Email"
+              formControlName="email"
+              inputmode="email"
+              autofocus="true"
+            >
+            </ion-input>
+            <ion-note
+              item-end
+              color="danger"
+              *ngIf="email.dirty && email.hasError('required')"
+            >
+              Obrigatório
+            </ion-note>
+            <ion-note
+              item-end
+              color="danger"
+              *ngIf="email.dirty && email.hasError('email')"
+            >
+              Email inválido
+            </ion-note>
+          </ion-item>
+
+          <ion-item>
+            <ion-icon
+              name="lock"
+              color="primary"
+              item-start
+            ></ion-icon>
+            <ion-input
+              type="password"
+              placeholder="Password"
+              formControlName="password"
+            ></ion-input>
+            <ion-note
+              item-end
+              color="danger"
+              *ngIf="password.dirty && password.hasError('required')"
+            >
+              Obrigatório
+            </ion-note>
+            <ion-note
+              item-end
+              color="danger"
+              *ngIf="password.dirty && password.hasError('minlength')"
+            >
+              Min 6 caracteres
+            </ion-note>
+          </ion-item>
+
+          <button
+            ion-button
+            block
+            type="submit"
+            [disabled]="authForm.invalid"
+          >
+            {{ configs.action }}
+          </button>
+        </form>
+
+        <button
+          color="light"
+          ion-button
+          block
+          clear
+          (click)="changeAuthAction()"
+        >
+          {{ configs.actionChange }}
+        </button>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
