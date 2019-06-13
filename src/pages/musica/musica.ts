@@ -4,10 +4,11 @@ import { FormControl } from '@angular/forms';
 import { AudioProvider } from '../../providers/audio/audio';
 import { CloudProvider } from '../../providers/cloud/cloud';
 import { Store } from '@ngrx/store';
-import { pluck, filter, map, distinctUntilChanged } from 'rxjs/operators';
+import { pluck, filter, map, distinctUntilChanged, take } from 'rxjs/operators';
 import { RESET, CANPLAY, LOADEDMETADATA, PLAYING, TIMEUPDATE, LOADSTART } from '../../providers/store/store';
 import { PlaylistProvider } from '../../providers/playlist/playlist';
 import { Playlist } from '../../models/playlist.model';
+import { AuthProvider } from '../../providers/auth/auth';
 
 @IonicPage({
   defaultHistory: ['HomePage'],
@@ -30,6 +31,7 @@ export class MusicaPage {
   @ViewChild(Content) content: Content;
 
   constructor(
+    public authService: AuthProvider,
     public navCtrl: NavController,
     public navParams: NavParams,
     public audioProvider: AudioProvider,
@@ -38,6 +40,14 @@ export class MusicaPage {
     private store: Store<any>,
     private playlistService: PlaylistProvider
   ) { }
+
+
+  ionViewCanEnter() {
+    return this.authService.isAuthenticated
+      .pipe(
+        take(1)
+      ).toPromise();
+  }
 
   ionViewDidLoad() {
     this.getDocuments();
