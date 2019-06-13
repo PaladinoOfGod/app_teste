@@ -69,8 +69,8 @@ export class AuthPage implements OnInit {
     observable
       .pipe(take(1))
       .subscribe(
-        user => this.navCtrl.setRoot('HomePage', null, {animate: true}),
-        ({error: { message }}) => {
+        user => this.navCtrl.setRoot('HomePage', null, { animate: true }),
+        ({ error: { message } }) => {
           this.overlayService.toast({
             message
           })

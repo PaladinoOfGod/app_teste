@@ -19,6 +19,7 @@ import { MusicaPageModule } from '../pages/musica/musica.module';
 import { AuthProvider } from '../providers/auth/auth';
 import { APP_CONFIG, appConfig } from '../providers/configs/config';
 import { OverlayProvider } from '../providers/overlay/overlay';
+import { PlaylistProvider } from '../providers/playlist/playlist';
 
 @NgModule({
   declarations: [MyApp],
@@ -31,7 +32,9 @@ import { OverlayProvider } from '../providers/overlay/overlay';
     StoreModule.forRoot({
       appState: mediaStateReducer
     }),
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp, {
+      locationStrategy: 'hash'
+    }),
     MusicaPageModule
   ],
   bootstrap: [IonicApp],
@@ -47,7 +50,8 @@ import { OverlayProvider } from '../providers/overlay/overlay';
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     AuthProvider,
     { provide: APP_CONFIG, useValue: appConfig },
-    OverlayProvider
+    OverlayProvider,
+    PlaylistProvider
   ]
 })
-export class AppModule {}
+export class AppModule { }

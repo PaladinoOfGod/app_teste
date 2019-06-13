@@ -18,14 +18,14 @@
   width: 100vw;
   height: 100vh;
   padding: 0px;
-  background-image: url('../assets/imgs/bg-login.jpg');
+  background-image: url('../assets/imgs/bg-home.jpg');
   background-size: cover;
-  filter: blur(4px);
+  // filter: blur(4px);
 }
 
 ion-content,
 ion-item {
-  background-color: transparent !important;
+  // background-color: transparent !important;
 }
 
 ion-input {

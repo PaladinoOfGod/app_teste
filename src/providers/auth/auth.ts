@@ -10,7 +10,10 @@ import { User } from '../../models/user.model';
 export class AuthProvider {
   private authState = new BehaviorSubject<boolean>(false);
 
-  constructor(@Inject(APP_CONFIG) public appConfig: AppConfig, public http: HttpClient) {}
+  constructor(
+    @Inject(APP_CONFIG) public appConfig: AppConfig,
+    public http: HttpClient
+  ) { }
 
   get isAuthenticated(): Observable<boolean> {
     return this.authState.asObservable();

@@ -6,20 +6,19 @@ import { CloudProvider } from '../../providers/cloud/cloud';
 import { Store } from '@ngrx/store';
 import { pluck, filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { RESET, CANPLAY, LOADEDMETADATA, PLAYING, TIMEUPDATE, LOADSTART } from '../../providers/store/store';
+import { PlaylistProvider } from '../../providers/playlist/playlist';
+import { Playlist } from '../../models/playlist.model';
 
-/**
- * Generated class for the MusicaPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
-@IonicPage()
+@IonicPage({
+  defaultHistory: ['HomePage'],
+  segment: 'playlist/:id'
+})
 @Component({
   selector: 'page-musica',
   templateUrl: 'musica.html',
 })
 export class MusicaPage {
+  playlist: Playlist;
   files: any = [];
   seekbar: FormControl = new FormControl("seekbar");
   state: any = {};
@@ -36,21 +35,23 @@ export class MusicaPage {
     public audioProvider: AudioProvider,
     public loadingCtrl: LoadingController,
     public cloudProvider: CloudProvider,
-    private store: Store<any>
-  ) {
-    //this.getDocuments();
-  }
+    private store: Store<any>,
+    private playlistService: PlaylistProvider
+  ) { }
 
-  ionViewDidLoad(){
+  ionViewDidLoad() {
     this.getDocuments();
   }
 
   getDocuments() {
     let loader = this.presentLoading();
-    this.cloudProvider.getFiles().subscribe(files => {
-      this.files = files;
-      loader.dismiss();
-    });
+    this.playlistService
+      .getById(this.navParams.get('id'))
+      .subscribe(playlist => {
+        this.playlist = playlist;
+        this.files = playlist.tracks;
+        loader.dismiss();
+      });
   }
 
   presentLoading() {
@@ -69,7 +70,10 @@ export class MusicaPage {
     // Resize the Content Screen so that Ionic is aware of footer
     this.store
       .select('appState')
-      .pipe(pluck('media', 'canplay'), filter(value => value === true))
+      .pipe(
+        pluck('media', 'canplay'),
+        filter(value => value === true)
+      )
       .subscribe(() => {
         this.displayFooter = 'active';
         this.content.resize();
@@ -91,7 +95,7 @@ export class MusicaPage {
 
   openFile(file, index) {
     this.currentFile = { index, file };
-    this.playStream(file.url);
+    this.playStream(file._id);
 
     localStorage.setItem('indexUltimaMusicaTocada', index);
 
@@ -102,9 +106,9 @@ export class MusicaPage {
     this.store.dispatch({ type: RESET });
   }
 
-  playStream(url) {
+  playStream(id) {
     this.resetState();
-    this.audioProvider.playStream(url).subscribe(event => {
+    this.audioProvider.playStream(id).subscribe(event => {
       const audioObj = event.target;
 
       switch (event.type) {
@@ -122,7 +126,7 @@ export class MusicaPage {
                   'HH:mm:ss'
                 ),
                 timeSec: audioObj.duration,
-                mediaType: 'mp3'
+                mediaType: 'audio/mpeg'
               }
             }
           });
@@ -147,6 +151,12 @@ export class MusicaPage {
 
         case 'loadstart':
           return this.store.dispatch({ type: LOADSTART, payload: { value: true } });
+
+        case 'ended':
+          const index = this.currentFile.index + 1;
+          if (index < this.files.length) {
+            this.openFile(this.files[index], index);
+          }
       }
     });
   }
@@ -164,7 +174,6 @@ export class MusicaPage {
   }
 
   next() {
-    debugger;
     let index = parseInt(localStorage.getItem('indexUltimaMusicaTocada')) + 1;
     //let index = this.currentFile.index + 1;
     let file = this.files[index];
@@ -172,7 +181,6 @@ export class MusicaPage {
   }
 
   previous() {
-    debugger;
     let index = parseInt(localStorage.getItem('indexUltimaMusicaTocada')) - 1;
     //let index = this.currentFile.index + 1;
     let file = this.files[index];
@@ -195,11 +203,9 @@ export class MusicaPage {
   }
 
   onSeekEnd(event) {
+    this.audioProvider.seekTo(event.value);
     if (this.onSeekState) {
-      this.audioProvider.seekTo(event.value);
       this.play();
-    } else {
-      this.audioProvider.seekTo(event.value);
     }
   }
 

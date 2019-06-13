@@ -1,0 +1,14 @@
+<ion-card
+  tappable
+  class="playlist"
+  (click)="selected.emit(playlist)"
+>
+  <ion-card-header class="playlist__title">{{ playlist.title }}</ion-card-header>
+  <ion-card-content class="playlist__content">{{ playlist.description }}</ion-card-content>
+  <div class="playlist__actions">
+    <ion-icon
+      name="play"
+      class="playlist__actions__icon"
+    ></ion-icon>
+  </div>
+</ion-card>

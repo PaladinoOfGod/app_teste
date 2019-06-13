@@ -1,27 +1,33 @@
-import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import { Injectable, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
+
+import { APP_CONFIG, AppConfig } from '../configs/config';
 
 @Injectable()
 export class AudioProvider {
   private stop$ = new Subject();
   private audioObj = new Audio();
 
-  constructor() { }
+  constructor(
+    @Inject(APP_CONFIG) public appConfig: AppConfig,
+    public http: HttpClient
+  ) { }
 
   private streamObservable(url) {
     let events = [
       'ended', 'error', 'play', 'playing', 'pause', 'timeupdate', 'canplay', 'loadedmetadata', 'loadstart'
     ];
 
-    const addEvents = function(obj, events, handler) {
+    const addEvents = function (obj, events, handler) {
       events.forEach(event => {
         obj.addEventListener(event, handler);
       });
     };
 
-    const removeEvents = function(obj, events, handler) {
+    const removeEvents = function (obj, events, handler) {
       events.forEach(event => {
         obj.removeEventListener(event, handler);
       });
@@ -48,8 +54,9 @@ export class AudioProvider {
     });
   }
 
-  playStream(url) {
-    return this.streamObservable(url).pipe(takeUntil(this.stop$));
+  playStream(id: string) {
+    return this.streamObservable(`${this.appConfig.apiUrl}/tracks/${id}`)
+      .pipe(takeUntil(this.stop$));
   }
 
   play() {

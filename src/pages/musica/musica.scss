@@ -1,3 +1,17 @@
 page-musica {
 
+  .card {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-radius: 4px;
+  }
+
+  .label, .icon {
+    color: white;
+  }
+
+  .item {
+    background-color: map-get($colors, primary);
+  }
+
 }

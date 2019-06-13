@@ -1,7 +1,37 @@
-<ion-header>
-  <ion-navbar color="primary">
-    <ion-title>Playlists</ion-title>
+<ion-header no-border>
+  <ion-navbar transparent>
+    <ion-title text-center>Playlists</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding></ion-content>
+<ion-content
+  padding
+  class="bg-image"
+>
+
+  <ion-grid>
+
+    <ion-row
+      align-items-center
+      style="height: 80vh"
+    >
+
+      <ion-col
+        *ngFor="let playlist of playlists$ | async"
+        col-6
+        col-sm-6
+        col-md-6
+        col-lg-3
+        col-xl-3
+      >
+        <playlist-item
+          [playlist]="playlist"
+          (click)="onPlaylist(playlist)"
+        ></playlist-item>
+      </ion-col>
+
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

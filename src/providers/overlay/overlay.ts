@@ -1,12 +1,20 @@
 import { Injectable } from '@angular/core';
-import { ToastController, ToastOptions, Toast } from 'ionic-angular';
+import {
+  ToastController,
+  ToastOptions,
+  Toast,
+  LoadingOptions,
+  LoadingController,
+  Loading
+} from 'ionic-angular';
 
 @Injectable()
 export class OverlayProvider {
 
   constructor(
+    public loadingCtrl: LoadingController,
     public toastCtrl: ToastController
-  ) {}
+  ) { }
 
   toast(options?: ToastOptions): Toast {
     const toast = this.toastCtrl.create({
@@ -18,6 +26,15 @@ export class OverlayProvider {
     });
     toast.present();
     return toast;
+  }
+
+  loading(options?: LoadingOptions): Loading {
+    const loading = this.loadingCtrl.create({
+      content: 'Loading content, please wait...',
+      ...options
+    });
+    loading.present();
+    return loading;
   }
 
 }
